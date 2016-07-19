@@ -58,8 +58,8 @@ ball = {
     y: 50,
     r: 5,
     c: "#fff",
-    vx: 4,
-    vy: 8,
+    vx: 8,
+    vy: 4,
     draw: function() {
         ctx.beginPath();
         ctx.fillStyle = this.c;
@@ -101,7 +101,7 @@ function paintScore() {
     ctx.font = "18px Arial, sans-serif";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText("SCORE: " + points, 20, 20);
+    ctx.fillText("SCORE: " + points, W / 2 - 43, 20);
 
 }
 
@@ -109,14 +109,14 @@ paintScore();
 
 // Step 06 .. jwt .. Place paddles (top and bottom) on canvas
 function paddlePosition(TB) {
-    this.w = 150;
-    this.h = 5;
+    this.w = 5;
+    this.h = 150;
 
-    this.x = W / 2 - this.w / 2; // Takes width of browser window/2 and paddle /2 to position completely in the center of the screen
+    this.y = H / 2 - this.h / 2; // Takes width of browser window/2 and paddle /2 to position completely in the center of the screen
     if (TB == "top") {
-        this.y = 0;
+        this.x = 0;
     } else {
-        this.y = H - this.h;
+        this.x = W - this.w;
     }
     // this.y = (TB == "top") ? 0 : H - this.h;   // Another way to write if/else statement
 }
@@ -130,9 +130,18 @@ paddlesArray.push(new paddlePosition("bottom"));
 function paintPaddles() {
     for (var lp = 0; lp < paddlesArray.length; lp++) {
         p = paddlesArray[lp];
+        if (lp == 0) {
+            ctx.fillStyle = "#f00";
+        } else {
+            ctx.fillStyle = "#00f";
+        }
 
-        ctx.fillStyle = "#fff";
+        if (points > 0 && points % 4 === 0) {
+            p.h -= 4;
+        }
+
         ctx.fillRect(p.x, p.y, p.w, p.h);
+
     }
 }
 paintPaddles();
@@ -178,7 +187,7 @@ function update() {
     // move the paddles, track the mouse
     for (var lp = 0; lp < paddlesArray.length; lp++) {
         p = paddlesArray[lp];
-        p.x = mouseObj.x - p.w / 2; // centered to where mouse position is
+        p.y = mouseObj.y - p.h / 2; // centered to where mouse position is
     }
     // move the ball
     ball.x += ball.vx;
@@ -197,29 +206,29 @@ function check4collision() {
         collideAction(ball, pBot);
     } else {
         // Ball went off the top or bottom of screen
-        if (ball.y + ball.r > H) {
+        if (ball.x + ball.r > W) {
             // Game over
-        } else if (ball.y < 0) {
+        } else if (ball.x < 0) {
             // Game over
         }
         // Ball hits the side of screen
-        if (ball.x + ball.r > W) {
-            ball.vx = -ball.vx;
-            ball.x = W - ball.r;
-        } else if (ball.x - ball.r < 0) {
-            ball.vx = -ball.vx;
-            ball.x = ball.r;
+        if (ball.y + ball.r > H) {
+            ball.vy = -ball.vy;
+            ball.y = H - ball.r;
+        } else if (ball.y - ball.r < 0) {
+            ball.vy = -ball.vy;
+            ball.y = ball.r;
         }
     }
 }
 
 var paddleHit; // Which paddle was hit 0 = top, 1 = bottom
 function collides(b, p) {
-    if (b.x + b.r >= p.x && b.x - b.r <= p.x + p.w) {
-        if (b.y >= (p.y - p.h) && p.y > 0) {
+    if (b.y + b.r >= p.y && b.y - b.r <= p.y + p.h) {
+        if (b.x >= (p.x - p.w) && p.x > 0) {
             paddleHit = 0;
             return true;
-        } else if (b.y <= p.h && p.y === 0) {
+        } else if (b.x <= p.w && p.x === 0) {
             paddleHit = 1;
             return true;
         } else {
@@ -234,7 +243,7 @@ function collideAction(b, p) {
     // console.log("sound and then bounce");
     collisionSnd.play();
     // reverse ball y velocity
-    ball.vy = -ball.vy;
+    ball.vx = -ball.vx;
     // increase the score by 1
     points++;
 }

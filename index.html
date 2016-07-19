@@ -2,7 +2,7 @@
 	<head>
 		<title>Solo Ping Pong</title>
 		<meta charset="UTF-8">
-		<meta name="author" content="Original: Kushagra Agarwal, Modified by: Jervis Thompson">
+		<meta name="author" content="Original: Kushagra Agarwal, Modified by: Jervis Thompson, Project by: Zara Leventhal">
 		<meta name="description" content="Ping-Pong Game with HTML5, Canvas, and Sounds">
 		<!-- http://cssdeck.com/labs/ping-pong-game-tutorial-with-html5-canvas-and-sounds -->
 		<link rel="stylesheet" href="css/basic.css">
@@ -10,6 +10,10 @@
 	<body>
 		<canvas id="canvas"></canvas>
 		<audio preload="true" id="collide">
+			<source src="snd/pew.mp3" />
+			<source src="snd/pew.wav" />
+		</audio>
+		<audio preload="true" id="wall">
 			<source src="snd/pop.mp3" />
 			<source src="snd/pop.wav" />
 		</audio>
