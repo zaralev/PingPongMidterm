@@ -72,12 +72,35 @@ ball.draw();
 
 
 // Step 04 .. jwt .. Place a start button on canvas
+// var startBtn = {}; // Start button object
+// startBtn = {
+//     w: 100,
+//     h: 50,
+//     x: W / 2 - 50,
+//     y: H / 2 - 25,
+//
+//     draw: function() {
+//         ctx.strokeStyle = "#fff";
+//         ctx.lineWidth = "2";
+//         ctx.strokeRect(this.x, this.y, this.w, this.h);
+//
+//         ctx.font = "18px Arial, sans-serif";
+//         ctx.textAlign = "center";
+//         ctx.textBaseline = "middle";
+//         ctx.fillStyle = "#fff";
+//         ctx.fillText("START", W / 2, H / 2);
+//     }
+// }
+//
+// startBtn.draw();
+
+// Step 04 .. zsl .. adding start button and instructions on canvas
 var startBtn = {}; // Start button object
 startBtn = {
     w: 100,
     h: 50,
     x: W / 2 - 50,
-    y: H / 2 - 25,
+    y: H / 2 - 100,
 
     draw: function() {
         ctx.strokeStyle = "#fff";
@@ -88,11 +111,40 @@ startBtn = {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#fff";
-        ctx.fillText("START", W / 2, H / 2);
+        ctx.fillText("START", W / 2, H / 2 - 75);
     }
 }
 
 startBtn.draw();
+
+var instruct = {};
+instruct = {
+    draw: function() {
+        ctx.font = "22px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("Move mouse to control paddles.", W / 2, H / 2 - 15);
+    }
+}
+
+instruct.draw();
+
+var linetwo = {};
+linetwo = {
+    draw: function() {
+        ctx.font = "22px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("Hit ball for points.", W / 2, H / 2 + 15);
+    }
+}
+
+linetwo.draw();
+
+
+
 
 // Step 05 .. jwt .. Place score and points on canvas
 var points = 0; // game points
@@ -113,7 +165,7 @@ function paddlePosition(TB) {
     this.h = 150;
 
     this.y = H / 2 - this.h / 2; // Takes width of browser window/2 and paddle /2 to position completely in the center of the screen
-    if (TB == "top") {
+    if (TB == "left") {
         this.x = 0;
     } else {
         this.x = W - this.w;
@@ -122,8 +174,8 @@ function paddlePosition(TB) {
 }
 
 var paddlesArray = []; // Paddles Array
-paddlesArray.push(new paddlePosition("top"));
-paddlesArray.push(new paddlePosition("bottom"));
+paddlesArray.push(new paddlePosition("left"));
+paddlesArray.push(new paddlePosition("right"));
 // console.log("top paddle y is: " + paddlesArray[0].y);
 // console.log("bottom paddle y is: " + paddlesArray[1].y);
 
@@ -198,13 +250,13 @@ function update() {
 }
 
 function check4collision() {
-    var pTop = paddlesArray[0];
-    var pBot = paddlesArray[1];
+    var pLeft = paddlesArray[0];
+    var pRight = paddlesArray[1];
 
-    if (collides(ball, pTop)) {
-        collideAction(ball, pTop);
-    } else if (collides(ball, pBot)) {
-        collideAction(ball, pBot);
+    if (collides(ball, pLeft)) {
+        collideAction(ball, pLeft);
+    } else if (collides(ball, pRight)) {
+        collideAction(ball, pRight);
     } else {
         // Ball went off the top or bottom of screen
         if (ball.x + ball.r > W) {
