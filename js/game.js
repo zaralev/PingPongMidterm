@@ -136,9 +136,10 @@ function paintPaddles() {
             ctx.fillStyle = "#00f";
         }
 
-        if (points > 0 && points % 4 === 0) {
-            p.h -= 4;
-        }
+        // ATTEMPT AT REDUCING SIZE OF PADDLES
+        // if (points > 0 && points % 4 === 0) {
+        //     p.h -= 4;
+        // }
 
         ctx.fillRect(p.x, p.y, p.w, p.h);
 
