@@ -371,7 +371,9 @@ function collideAction(b, p) {
     particlePos.y = ball.y;
     flagCollision = 1;
 
-    // add decrease paddle size HERE
+    // Decrease paddle size
+    decreasePaddle();
+
 }
 
 // SPARKLES AGAIN
@@ -389,6 +391,15 @@ function increaseSpd() {
         if (Math.abs(ball.vy) < 15) { // add an upper limit to the speed of the ball
             ball.vx += (ball.vx < 0) ? -2 : 2; // if the ball is going left, then increase it going left. otherwise, increase it by one going right
             ball.vy += (ball.vy < 0) ? -1 : 1; // Up faster by two vs down faster by two
+        }
+    }
+}
+
+function decreasePaddle() {
+    // increase ball speed after every 4 points
+    if (points % 4 === 0) {
+        for (var z = 0; z < paddlesArray.length; z++) {
+            paddlesArray[z].h -= 15;
         }
     }
 }
