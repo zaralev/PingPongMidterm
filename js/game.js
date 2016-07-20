@@ -92,7 +92,7 @@ ball.draw();
 //     }
 // }
 //
-// startBtn.draw();
+// startBtn.draw(); 
 
 // Step 04 .. zsl .. adding start button and instructions on canvas
 var startBtn = {}; // Start button object
@@ -188,11 +188,6 @@ function paintPaddles() {
             ctx.fillStyle = "#00f";
         }
 
-        // ATTEMPT AT REDUCING SIZE OF PADDLES
-        // if (points > 0 && points % 4 === 0) {
-        //     p.h -= 4;
-        // }
-
         ctx.fillRect(p.x, p.y, p.w, p.h);
 
     }
@@ -218,10 +213,28 @@ function btnClick(evt) {
             animloop();
         }
     }
+
+    if (flagGameOver) {
+        if (mx >= restartBtn.x && mx <= restartBtn.x + restartBtn.w) {
+            if (my >= restartBtn.y && my <= restartBtn.y + restartBtn.h) {
+                // Reset my game
+                points = 0;
+                ball.x = 20;
+                ball.y = 20;
+                ball.vx = 4;
+                ball.vy = 8;
+
+                flagGameOver = 0;
+                // Start Game animation loop
+                animloop();
+            }
+        }
+    }
+
 }
 
 // Function for running the whole game animation
-var init; // Variable to intialize animation
+var init; // Variable to initialize animation
 function animloop() {
     init = requestAnimFrame(animloop);
     refreshCanvasFun();
@@ -261,8 +274,10 @@ function check4collision() {
         // Ball went off the top or bottom of screen
         if (ball.x + ball.r > W) {
             // Game over
+            gameOver();
         } else if (ball.x < 0) {
             // Game over
+            gameOver();
         }
         // Ball hits the side of screen
         if (ball.y + ball.r > H) {
@@ -272,6 +287,45 @@ function check4collision() {
             ball.vy = -ball.vy;
             ball.y = ball.r;
         }
+    }
+    // SPARKLES
+    if (flagCollision) {
+        for (var k = 0; k < particleCount; k++) {
+            particles.push(new createParticles(particlePos.x, particlePos.y, particleDir));
+        }
+    }
+
+    // Emit particles/sparks
+    emitParticles();
+    // reset flagCollision
+    flagCollision = 0;
+}
+
+function createParticles(x, y, d) {
+    this.x = x || 0; // equal to x or 0 if no parameter is passed in
+    this.y = y || 0;
+
+    this.radius = 2;
+    this.vy = -1.5 + Math.random() * 3;
+    this.vx = d * Math.random() * 1.5;
+}
+
+function emitParticles() {
+    for (var j = 0; j < particles.length; j++) {
+        var par = particles[j];
+
+        ctx.beginPath();
+        ctx.fillStyle = "#fff";
+        if (par.radius > 0) {
+            ctx.arc(par.x, par.y, par.radius, 0, Math.PI * 2, false);
+        }
+        ctx.fill();
+
+        par.x += par.vx;
+        par.y += par.vy;
+
+        // Reduce radius of particle so that it dies after a few seconds
+        par.radius = Math.max(par.radius - 0.05, 0.0);
     }
 }
 
@@ -294,9 +348,89 @@ var collisionSnd = document.getElementById("collide");
 
 function collideAction(b, p) {
     // console.log("sound and then bounce");
-    collisionSnd.play();
-    // reverse ball y velocity
+    if (collisionSnd) {
+        collisionSnd.play();
+    }
+    // reverse ball x velocity
     ball.vx = -ball.vx;
-    // increase the score by 1
-    points++;
+    if (paddleHit == 0) {
+        // ball hit top paddle
+        ball.x = p.x - p.w; // reset ball so it is at the bottom of the paddle
+        particlePos.x = ball.x + ball.r;
+        particleDir = -1;
+    } else if (paddleHit == 1) {
+        // ball hit bottom paddle
+        ball.x = p.w + ball.r;
+        particlePos.x = ball.x - ball.r;
+        particleDir = 1;
+    }
+    points++; // increase the score by 1
+    increaseSpd();
+
+    //SPARKLES
+    particlePos.y = ball.y;
+    flagCollision = 1;
+
+    // add decrease paddle size HERE
+}
+
+// SPARKLES AGAIN
+var flagCollision = 0; // flag var for when ball collides with paddle for particles
+var particles = []; // array for particles
+var particlePos = {}; // Object to contain the position of collision
+var particleDir = 1; // Var to control the direction of sparks
+var particleCount = 20; // number of sparks when the ball hits the paddle
+
+
+
+function increaseSpd() {
+    // increase ball speed after every 4 points
+    if (points % 4 === 0) {
+        if (Math.abs(ball.vy) < 15) { // add an upper limit to the speed of the ball
+            ball.vx += (ball.vx < 0) ? -2 : 2; // if the ball is going left, then increase it going left. otherwise, increase it by one going right
+            ball.vy += (ball.vy < 0) ? -1 : 1; // Up faster by two vs down faster by two
+        }
+    }
+}
+
+var flagGameOver = 0;
+// Function to run when the game is over
+function gameOver() {
+    // console.log("Game is over");
+
+    // Display final score
+    ctx.fillStyle = "#fff";
+    ctx.font = "20px Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Game Over - You scored " + points + " points!", W / 2, H / 2 + 25);
+
+    // Stop the animation
+    cancelRequestAnimFrame(init);
+
+    // Display replay button
+    restartBtn.draw();
+
+    // Set the game over flag
+    flagGameOver = 1;
+}
+
+var restartBtn = {}; // Restart button object
+restartBtn = {
+    w: 100,
+    h: 50,
+    x: W / 2 - 50,
+    y: H / 2 - 50,
+
+    draw: function() {
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = "2";
+        ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+        ctx.font = "18px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("RESTART", W / 2, H / 2 - 25);
+    }
 }
