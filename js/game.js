@@ -20,7 +20,6 @@ window.cancelRequestAnimFrame = (function() {
 })();
 
 // DO NOT TOUCH CODE ABOVE
-
 // Step 01 .. jwt .. Create game canvas and track mouse position
 var gameCanvas = document.getElementById('canvas'); // Store HTML5 canvas tag into a JS variable
 
@@ -221,8 +220,8 @@ function btnClick(evt) {
                 points = 0;
                 ball.x = 20;
                 ball.y = 20;
-                ball.vx = 4;
-                ball.vy = 8;
+                ball.vx = 8;
+                ball.vy = 4;
 
                 flagGameOver = 0;
                 // Start Game animation loop
@@ -268,8 +267,10 @@ function check4collision() {
 
     if (collides(ball, pLeft)) {
         collideAction(ball, pLeft);
+
     } else if (collides(ball, pRight)) {
         collideAction(ball, pRight);
+
     } else {
         // Ball went off the top or bottom of screen
         if (ball.x + ball.r > W) {
@@ -310,12 +311,30 @@ function createParticles(x, y, d) {
     this.vx = d * Math.random() * 1.5;
 }
 
+// Randomly generates particle color per game
+// var color;
+// var colorCount = 1;
+// if (colorCount % 2 === 0) {
+//     var color = '';
+//     var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+//     colorCount++;
+// } else {
+//     var color = '';
+//     var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+//     colorCount++;
+// }
+
+
 function emitParticles() {
+  var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+
     for (var j = 0; j < particles.length; j++) {
         var par = particles[j];
 
         ctx.beginPath();
-        ctx.fillStyle = "#fff";
+        // ctx.fillStyle = "#fff";
+        // ctx.fillStyle = '#' + Math.floor(Math.random() * 16777215).toString(16); // Makes each particle a random color
+        ctx.fillStyle = color;
         if (par.radius > 0) {
             ctx.arc(par.x, par.y, par.radius, 0, Math.PI * 2, false);
         }
@@ -364,6 +383,7 @@ function collideAction(b, p) {
         particlePos.x = ball.x - ball.r;
         particleDir = 1;
     }
+
     points++; // increase the score by 1
     increaseSpd();
 
