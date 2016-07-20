@@ -399,7 +399,7 @@ function decreasePaddle() {
     // increase ball speed after every 4 points
     if (points % 4 === 0) {
         for (var z = 0; z < paddlesArray.length; z++) {
-            paddlesArray[z].h -= 15;
+            paddlesArray[z].h -= 5;
         }
     }
 }
