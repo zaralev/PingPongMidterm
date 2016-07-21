@@ -20,6 +20,7 @@ window.cancelRequestAnimFrame = (function() {
 })();
 
 // DO NOT TOUCH CODE ABOVE
+
 // Step 01 .. jwt .. Create game canvas and track mouse position
 var gameCanvas = document.getElementById('canvas'); // Store HTML5 canvas tag into a JS variable
 
@@ -44,7 +45,6 @@ paintCanvas();
 function trackPosition(evt) {
     mouseObj.x = evt.pageX;
     mouseObj.y = evt.pageY;
-    // console.log("cursor x is : " + mouseObj.x + "cursor y is : " + mouseObj.y);
 }
 
 gameCanvas.addEventListener("mousemove", trackPosition, true);
@@ -68,30 +68,6 @@ ball = {
 }
 
 ball.draw();
-
-
-// Step 04 .. jwt .. Place a start button on canvas
-// var startBtn = {}; // Start button object
-// startBtn = {
-//     w: 100,
-//     h: 50,
-//     x: W / 2 - 50,
-//     y: H / 2 - 25,
-//
-//     draw: function() {
-//         ctx.strokeStyle = "#fff";
-//         ctx.lineWidth = "2";
-//         ctx.strokeRect(this.x, this.y, this.w, this.h);
-//
-//         ctx.font = "18px Arial, sans-serif";
-//         ctx.textAlign = "center";
-//         ctx.textBaseline = "middle";
-//         ctx.fillStyle = "#fff";
-//         ctx.fillText("START", W / 2, H / 2);
-//     }
-// }
-//
-// startBtn.draw(); 
 
 // Step 04 .. zsl .. adding start button and instructions on canvas
 var startBtn = {}; // Start button object
@@ -175,8 +151,6 @@ function paddlePosition(TB) {
 var paddlesArray = []; // Paddles Array
 paddlesArray.push(new paddlePosition("left"));
 paddlesArray.push(new paddlePosition("right"));
-// console.log("top paddle y is: " + paddlesArray[0].y);
-// console.log("bottom paddle y is: " + paddlesArray[1].y);
 
 function paintPaddles() {
     for (var lp = 0; lp < paddlesArray.length; lp++) {
@@ -204,7 +178,7 @@ function btnClick(evt) {
     // User clicked on start button
     if (mx >= startBtn.x && mx <= startBtn.x + startBtn.w) {
         if (my >= startBtn.y && my <= startBtn.y + startBtn.h) {
-            // console.log("start button clicked");
+
             // Delete the start button
             startBtn = {};
 
@@ -260,7 +234,7 @@ function update() {
     // Check for ball paddle collision
     check4collision();
 }
-var color;
+var color; // Create global variable for the random color so it can be accessed by multiple functions
 
 function check4collision() {
     var pLeft = paddlesArray[0];
@@ -295,7 +269,7 @@ function check4collision() {
         for (var k = 0; k < particleCount; k++) {
             particles.push(new createParticles(particlePos.x, particlePos.y, particleDir));
         }
-        color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        color = '#' + Math.floor(Math.random() * 16777215).toString(16); // Random color generator called once on impact
 
     }
 
@@ -314,29 +288,13 @@ function createParticles(x, y, d) {
     this.vx = d * Math.random() * 1.5;
 }
 
-// Randomly generates particle color per game
-// var color;
-// var colorCount = 1;
-// if (colorCount % 2 === 0) {
-//     var color = '';
-//     var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-//     colorCount++;
-// } else {
-//     var color = '';
-//     var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
-//     colorCount++;
-// }
-
-
 function emitParticles() {
 
     for (var j = 0; j < particles.length; j++) {
         var par = particles[j];
 
         ctx.beginPath();
-        // ctx.fillStyle = "#fff";
-        // ctx.fillStyle = '#' + Math.floor(Math.random() * 16777215).toString(16); // Makes each particle a random color
-        ctx.fillStyle = color;
+        ctx.fillStyle = color; // Sets particle color to random color that was generated in var color
         if (par.radius > 0) {
             ctx.arc(par.x, par.y, par.radius, 0, Math.PI * 2, false);
         }
@@ -429,7 +387,6 @@ function decreasePaddle() {
 var flagGameOver = 0;
 // Function to run when the game is over
 function gameOver() {
-    // console.log("Game is over");
 
     // Display final score
     ctx.fillStyle = "#fff";
