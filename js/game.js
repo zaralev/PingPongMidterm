@@ -260,6 +260,7 @@ function update() {
     // Check for ball paddle collision
     check4collision();
 }
+var color;
 
 function check4collision() {
     var pLeft = paddlesArray[0];
@@ -294,6 +295,8 @@ function check4collision() {
         for (var k = 0; k < particleCount; k++) {
             particles.push(new createParticles(particlePos.x, particlePos.y, particleDir));
         }
+        color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+
     }
 
     // Emit particles/sparks
@@ -326,7 +329,6 @@ function createParticles(x, y, d) {
 
 
 function emitParticles() {
-  var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
 
     for (var j = 0; j < particles.length; j++) {
         var par = particles[j];
